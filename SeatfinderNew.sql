@@ -18,22 +18,6 @@ CREATE TABLE Users (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE UserSessions (
-	sessionID INT PRIMARY KEY AUTO_INCREMENT,
-    userID INT,
-    sessionToken VARCHAR(255),
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expiresAt TIME GENERATED ALWAYS AS (createdAt + INTERVAL 2 HOUR) STORED,
-    FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE
-);
-
-CREATE TABLE LoginAttempts (
-    attemptID INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50),
-    success BOOLEAN,
-    attemptedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE Stadiums (
     stadiumID INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -68,11 +52,12 @@ CREATE TABLE Concert (
 );
 
 CREATE TABLE Seats (
-    seatID INT PRIMARY KEY AUTO_INCREMENT,
+    seatID INT NOT NULL,
+    seatRow INT NOT NULL,
+    seatNumber INT NOT NULL,
     stadiumID INT,                      -- Foreign key to link each seat to a stadium
-    seatRow CHAR(1),                    -- Row letter (A, B, C, etc.)
-    seatNumber INT,                     -- Seat number within the ro
-    FOREIGN KEY (stadiumID) REFERENCES Stadiums(stadiumID) ON DELETE CASCADE
+    FOREIGN KEY (stadiumID) REFERENCES Stadiums(stadiumID) ON DELETE CASCADE,
+    PRIMARY KEY (seatID, seatRow, seatNumber)
 );
 
 CREATE TABLE Reservations (
